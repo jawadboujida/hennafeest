@@ -554,7 +554,7 @@
     document.getElementById('hennaNee').className = 'rsvp-toggle';
   }
 
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxxFIBZoh5eeQrDYOBTeKbu5ugC2TjDwnqF9HZOLYZlpVj8tn8p6MW8A2YSoNGkasmTvg/exec';
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzgPpLL1ymogP10_F5OkLcQzN8ZGTfEt7oWSyWe4J89JoiW_3Lx68dk7OUEOz5cYdQfUg/exec';
 
   async function sendWhatsApp() {
     const naam = document.getElementById('rsvpName').value.trim();
@@ -571,18 +571,15 @@
     }
     err.style.display = 'none';
 
-    // Stuur naar Google Sheet (op de achtergrond)
+    // Stuur naar Google Sheet via GET (werkt altijd met Apps Script)
     try {
-      await fetch(SHEET_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          naam:     naam,
-          aanwezig: keuzes.aanwezig === 'ja' ? 'Ja' : 'Nee',
-          henna:    keuzes.henna    === 'ja' ? 'Ja' : keuzes.henna === 'nee' ? 'Nee' : '—'
-        })
+      const params = new URLSearchParams({
+        actie:    'schrijf',
+        naam:     naam,
+        aanwezig: keuzes.aanwezig === 'ja' ? 'Ja' : 'Nee',
+        henna:    keuzes.henna    === 'ja' ? 'Ja' : keuzes.henna === 'nee' ? 'Nee' : '—'
       });
+      await fetch(SHEET_URL + '?' + params.toString(), { mode: 'no-cors' });
     } catch(e) {
       console.log('Sheet fout:', e);
     }
