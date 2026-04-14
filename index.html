@@ -559,19 +559,24 @@
   async function sendWhatsApp() {
     const naam = document.getElementById('rsvpName').value.trim();
     const err  = document.getElementById('rsvpError');
+    const btn  = document.querySelector('.rsvp-btn');
 
     // Validatie
     if (!naam || !keuzes.aanwezig) {
-      err.style.display = 'block';
-      return;
+      err.style.display = 'block'; return;
     }
     if (keuzes.aanwezig === 'ja' && !keuzes.henna) {
-      err.style.display = 'block';
-      return;
+      err.style.display = 'block'; return;
     }
     err.style.display = 'none';
 
-    // Stuur naar Google Sheet via GET (werkt altijd met Apps Script)
+    // Voorkom dubbele inzending
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    btn.innerHTML = '✓ Verstuurd!';
+
+    // Stuur naar Google Sheet via GET
     try {
       const params = new URLSearchParams({
         actie:    'schrijf',
